@@ -8,16 +8,66 @@ use Illuminate\Support\Facades\Storage;
 
 class Upload
 {
-    public static function upload($file, $fileName, $location) {
+    public static function upload_original($file, $fileName, $location) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
-        $upload_location = $location . "/" . $fileName;
 
-        $original = Image::make($file)->resize(1920, null, function ($constraint) {
+        $upload_location = $location."/".$fileName;
+        $upload_location_rand = $location."/".time()."-".$fileName;
+
+        $resized_image = Image::make($file)->resize(1920, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-        $s3->put($upload_location, $original->stream()->__toString(), 'public');
+        
+        if($s3->exists($upload_location)) {
+            
+            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+            return $upload_location_rand;
+
+        } else {
+
+            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+            return $upload_location;
+
+        }
 
         return $upload_location;
+    }
+
+    public static function upload_thumbnail($file, $fileName, $location) {
+        $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
+
+        $upload_location = $location."/".$fileName;
+        $upload_location_rand = $location."/".time()."-".$fileName;
+
+        $resized_image = Image::make($file)->resize(null, 200, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        
+        if($s3->exists($upload_location)) {
+            
+            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+            return $upload_location_rand;
+
+        } else {
+
+            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+            return $upload_location;
+
+        }
+
+        return $upload_location;
+    }
+
+    public static function delete_image($location) {
+        $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
+
+        if($s3->exists($location)) {
+            $s3->delete($location);
+            return;
+        }
+
+        return;
     }
 }
