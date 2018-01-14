@@ -11,8 +11,8 @@ class Upload
     public static function upload_original($file, $fileName, $location) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
-        $upload_location = $location."/".$fileName;
-        $upload_location_rand = $location."/".time()."-".$fileName;
+        $upload_location = $location."/original/".$fileName;
+        $upload_location_rand = $location."/original/".time()."-".$fileName;
 
         $resized_image = Image::make($file)->resize(1920, null, function ($constraint) {
             $constraint->aspectRatio();
@@ -37,8 +37,8 @@ class Upload
     public static function upload_thumbnail($file, $fileName, $location) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
-        $upload_location = $location."/".$fileName;
-        $upload_location_rand = $location."/".time()."-".$fileName;
+        $upload_location = $location."/thumbnanil/".$fileName;
+        $upload_location_rand = $location."/thumbnail/".time()."-".$fileName;
 
         $resized_image = Image::make($file)->resize(null, 200, function ($constraint) {
             $constraint->aspectRatio();
@@ -65,9 +65,9 @@ class Upload
 
         if($s3->exists($location)) {
             $s3->delete($location);
-            return;
+            return true;
         }
 
-        return;
+        return false;
     }
 }
