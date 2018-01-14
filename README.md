@@ -3,7 +3,7 @@
 Note: This photo upload package is currently designed to be used only with laravel.
 This is the version `v1.*` of the package
 ## Installation
-Manually modify the `composer.json` file. I have included my full `composer.json` file below for reference.
+Manually modify the `composer.json` file and add the following.
 
     "require": {
         "mohamedathik/photo-upload": "1.*"
@@ -16,6 +16,8 @@ Manually modify the `composer.json` file. I have included my full `composer.json
     ],
 
 and run `composer install`
+
+I have included my full `composer.json` file below to check if you have added the above part correctly.
 
 ## Usage
 The following code can be moved to a controller, This is example is done in the `routes/web.php` file
@@ -34,10 +36,10 @@ The following code can be moved to a controller, This is example is done in the 
         // The original file from rquest
         $file = $request->image;
     
-        // Give it any file name you want (make sure to include the file extension)
+        // Give it any file name you want (make sure to include the file extension, Using getClientOriginalName() would include the extension)
         $file_name = $file->getClientOriginalName();
     
-        // Location that the file would be upload (Do not include the filename)
+        // Location that the file would be upload (Do not include the filename, Orginal and Thumbnail folder would be created automatically)
         $location = "/images";
     
         // Uploading of orignal image (this would return the location for original image including the filename)
