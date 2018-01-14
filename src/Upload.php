@@ -12,7 +12,11 @@ class Upload
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
         $upload_location = $location . "/" . $fileName;
 
-        $s3->put($upload_location, $file, 'public');
+        $original = Image::make($file)->resize(1920, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $s3->put($upload_location, $original->stream()->__toString(), 'public');
 
         return $upload_location;
     }
