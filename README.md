@@ -3,7 +3,7 @@
 Note: This photo upload package is currently designed to be used only with laravel.
 This is the version `v1.*` of the package
 ## Installation
-Manually modify the `composer.json` file.
+Manually modify the `composer.json` file. I have included my full `composer.json` file below for reference.
 
     "require": {
         "mohamedathik/photo-upload": "1.*"
@@ -20,10 +20,11 @@ and run `composer install`
 ## Usage
 The following code can be moved to a controller, This is example is done in the `routes/web.php` file
 1) Create a basic upload form in html, Make sure that the form has `enctype="multipart/form-data"` and to include a `csrf_field()`
+
     ```html
     <form action="{{ url()->current() }}" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <input type="file" name="image" id="">
+        <input type="file" name="image">
         <button type="submit">Submit</button>    
     </form>
     ```
@@ -65,3 +66,73 @@ If you want to delete a image then use `delete_image()`. You need to pass the fi
     });
 ```
 If there is any new update to this package you need to run `composer update`.
+
+## The full composer.json file
+This is the full `composer.json` file
+
+```json
+{
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=7.0.0",
+        "fideloper/proxy": "~3.3",
+        "laravel/framework": "5.5.*",
+        "laravel/tinker": "~1.0",
+        "mohamedathik/photo-upload": "1.*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:mohamedathik/photo-upload.git"
+        }
+    ],
+    "require-dev": {
+        "filp/whoops": "~2.0",
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "~1.0",
+        "phpunit/phpunit": "~6.0"
+    },
+    "autoload": {
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+            ]
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
+
+```
