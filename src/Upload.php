@@ -11,7 +11,6 @@ class Upload
     public static function upload_original($file, $fileName, $location) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
-        $upload_location = $location."/original/".$fileName;
         $upload_location_rand = $location."/original/".time()."-".$fileName;
 
         $resized_image = Image::make($file)->resize(1920, null, function ($constraint) {
@@ -19,19 +18,8 @@ class Upload
             $constraint->upsize();
         });
         
-        if($s3->exists($upload_location)) {
-            
-            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
-            return $upload_location_rand;
-
-        } else {
-
-            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
-            return $upload_location;
-
-        }
-
-        return $upload_location;
+        $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+        return $upload_location_rand;
     }
 
     public static function upload_thumbnail($file, $fileName, $location) {
@@ -45,19 +33,8 @@ class Upload
             $constraint->upsize();
         });
         
-        if($s3->exists($upload_location)) {
-            
-            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
-            return $upload_location_rand;
-
-        } else {
-
-            $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
-            return $upload_location;
-
-        }
-
-        return $upload_location;
+        $s3->put($upload_location_rand, $resized_image->stream()->__toString(), 'public');
+        return $upload_location_rand;
     }
 
     public static function delete_image($location) {
