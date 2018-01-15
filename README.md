@@ -64,8 +64,11 @@ To specify the upload type add it to your .env file the default is public. If s3
     });
     ```
 For both the `upload_orginal()` and `upload_thumbnail()` it also accepts a width and a height.
+
 The default for the `upload_orginal()` is `$width = 1920` and `$height = null`, if the variables is not passed manually.
+
 The default for the `upload_orginal()` is `$width = null` and `$height = 200`, if the variables is not passed manually.
+
 Note: By passing null to either width or height it will automatically select it based on the images orginal ratio. also this function does not enlarge any image if its smaller than the specified width or height.
 
     
