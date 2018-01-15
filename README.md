@@ -1,8 +1,10 @@
 
 ## Photo upload package
 Note: This photo upload package is currently designed to be used only with laravel.
-This is the version `v1.*` of the package
-## Installation
+This is the version `v1.*` of the package.
+
+This package uses `Intervention/Image` for image resizing and `league/flysystem-aws-s3-v3` for uploading to Amazon s3.
+## Intallation
 Manually modify the `composer.json` file and add the following.
 
     "require": {
@@ -20,8 +22,18 @@ and run `composer install`
 I have included my full `composer.json` file below to check if you have added the above part correctly.
 
 ## Usage
-The following code can be moved to a controller, This is example is done in the `routes/web.php` file
-1) Create a basic upload form in html, Make sure that the form has `enctype="multipart/form-data"` and to include a `csrf_field()`
+1) This package supports uploading images to s3 or locally (which is inside the `storage\app\public` folder)
+To specify the upload type add it to your .env file the default is public. If s3 is used make sure to include your api keys.
+    ```
+    UPLOAD_TYPE=(write here either 's3' or 'public')
+
+    (include this if you choose s3)
+    AWS_KEY=XXXXXXXXXXXXXXXXXXXX
+    AWS_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    AWS_REGION=XXXXXXXXXX
+    AWS_BUCKET=XXXXXXXXXXX
+    ```
+2) Create a basic upload form in html, Make sure that the form has `enctype="multipart/form-data"` and to include a `csrf_field()`
 
     ```html
     <form action="{{ url()->current() }}" method="post" enctype="multipart/form-data">
@@ -30,7 +42,7 @@ The following code can be moved to a controller, This is example is done in the 
         <button type="submit">Submit</button>    
     </form>
     ```
-2) Create a route to handle the form post (This part can be done inside a controller)
+2) Create a route to handle the form post (The following code can be moved to a controller, This is example is done in the `routes/web.php` file)
     ```php
     Route::post('/photo', function (Request $request) {
         // The original file from rquest
@@ -51,11 +63,16 @@ The following code can be moved to a controller, This is example is done in the 
         echo $url_original."<br>".$url_thumbnail;
     });
     ```
+For both the `upload_orginal()` and `upload_thumbnail()` it also accepts a width and a height.
+The default for the `upload_orginal()` is `$width = 1920` and `$height = null`, if the variables is not passed manually.
+The default for the `upload_orginal()` is `$width = null` and `$height = 200`, if the variables is not passed manually.
+Note: By passing null to either width or height it will automatically select it based on the images orginal ratio. also this function does not enlarge any image if its smaller than the specified width or height.
+
     
 If you want to delete a image then use `delete_image()`. You need to pass the file location to this function. Here is an example route.
 ```php
     Route::get('/photo/delete', function () {
-        // Deleting the thumbnail imaege for demonstration purpose I am passing the file name manually
+        // Deleting the thumbnail image. For demonstration purpose I am passing the file name manually
         $delete_thumbnail_image = Upload::delete_image('/images/original/1515931209-Image.jpg');
         // The variable above will always return a true or false value
         // true  is returned if image is deleted 

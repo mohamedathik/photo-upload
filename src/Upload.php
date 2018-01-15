@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 class Upload
 {
-    public static function upload_original($file, $fileName, $location) {
+    public static function upload_original($file, $fileName, $location, $width = 1920, $height = null) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
         $upload_location_rand = $location."/original/".time()."-".$fileName;
 
-        $resized_image = Image::make($file)->resize(1920, null, function ($constraint) {
+        $resized_image = Image::make($file)->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
@@ -22,13 +22,13 @@ class Upload
         return $upload_location_rand;
     }
 
-    public static function upload_thumbnail($file, $fileName, $location) {
+    public static function upload_thumbnail($file, $fileName, $location, $width = null, $height = 200) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
         $upload_location = $location."/thumbnanil/".$fileName;
         $upload_location_rand = $location."/thumbnail/".time()."-".$fileName;
 
-        $resized_image = Image::make($file)->resize(null, 200, function ($constraint) {
+        $resized_image = Image::make($file)->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
