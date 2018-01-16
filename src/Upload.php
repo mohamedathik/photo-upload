@@ -37,6 +37,16 @@ class Upload
         return $upload_location_rand;
     }
 
+    public static function upload_both($file, $fileName, $location) {
+        $original = $this->upload_original($file, $fileName, $location);
+        $thumbanil = $this->upload_thumbnail($file, $fileName, $location);
+
+        return [
+            'orignal' => $original,
+            'thumbnail' => $thumbanil
+        ];
+    }
+
     public static function delete_image($location) {
         $s3 = Storage::disk(env('UPLOAD_TYPE', 'public'));
 
