@@ -42,7 +42,7 @@ class Upload
         $thumbanil = $this->upload_thumbnail($file, $fileName, $location);
 
         return [
-            'orignal' => $original,
+            'original' => $original,
             'thumbnail' => $thumbanil
         ];
     }
